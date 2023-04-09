@@ -1,28 +1,26 @@
 {
-    "root": true,
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:prettier/recommended"
+    ],
     "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": 13,
+        "sourceType": "module"
+    },
     "plugins": [
         "@typescript-eslint"
     ],
-    "extends": [
-        "eslint:recommended",
-        "plugin:@typescript-eslint/eslint-recommended",
-        "plugin:@typescript-eslint/recommended"
-    ],
     "rules": {
-        "@typescript-eslint/no-unused-vars": ["error"],
-        "comma-dangle": ["error", "always-multiline"],
-        "indent": ["error", 4, {"SwitchCase": 1}],
-        "no-multiple-empty-lines": ["error", {
-            "max": 1,
-            "maxBOF": 0,
-            "maxEOF": 0
-        }],
-        "no-param-reassign": ["error", { "props": true, "ignorePropertyModificationsFor": ["context"] } ],
-        "prefer-destructuring": ["error"],
-        "prefer-arrow-callback": ["error", { "allowNamedFunctions": true }],
-        "prefer-template": ["error"],
-        "quote-props": ["error", "consistent-as-needed"],
-        "quotes": ["error", "single"]
+        "@typescript-eslint/interface-name-prefix": "off",
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-non-null-assertion": "off"
     }
 }
