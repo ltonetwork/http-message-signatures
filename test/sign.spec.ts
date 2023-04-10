@@ -108,8 +108,7 @@ describe('sign', () => {
         'Content-Type': 'application/json',
         Digest: 'SHA-256=abcdef',
         Signature: `foo=:${expectedHashBase64}:`,
-        'Signature-Input':
-          'foo=("@authority");created=1681004344;keyid="test-key";alg="hmac-sha256"',
+        'Signature-Input': 'foo=("@authority");created=1681004344;keyid="test-key";alg="hmac-sha256"',
       });
     });
   });

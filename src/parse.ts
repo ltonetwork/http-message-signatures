@@ -27,11 +27,11 @@ function parseParametersHeader(
     .split(';')
     .map((entry) => parseEntry(name, entry.trim()));
 
-  const componentsIndex = entries.findIndex(([key, value]) => Array.isArray(value));
+  const componentsIndex = entries.findIndex(([, value]) => Array.isArray(value));
   if (componentsIndex === -1) throw new Error(`Invalid ${name} header. Missing components`);
   const [[key, components]] = entries.splice(componentsIndex, 1) as [[string, Component[]]];
 
-  if (entries.findIndex(([_, value]) => Array.isArray(value)) > 0) {
+  if (entries.findIndex(([, value]) => Array.isArray(value)) > 0) {
     throw new Error(`Multiple signatures is not supported`);
   }
 
