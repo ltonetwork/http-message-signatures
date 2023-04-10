@@ -6,8 +6,6 @@ nav_order: 1
 
 # HTTP Message Signatures
 
-![LTO github readme](https://user-images.githubusercontent.com/100821/230902149-bff231ac-125e-46a3-b318-4f0021d8662d.png)
-
 This library provides a simple way to implement the
 [IETF HTTP Message Signatures draft standard](https://www.ietf.org/archive/id/draft-ietf-httpbis-message-signatures-16.html)
 for signing and verifying the integrity and authenticity of HTTP requests and responses.
@@ -41,3 +39,5 @@ each environment.
     - [Verification in the Browser](verification/browser.md)
 4. [Accept-Signature](accept-signature.md)
 5. [API Reference](api-reference.md)
+
+[![LTO Network](https://user-images.githubusercontent.com/100821/230902149-bff231ac-125e-46a3-b318-4f0021d8662d.png)](https://ltonetwork.com)
