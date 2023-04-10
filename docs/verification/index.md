@@ -34,9 +34,7 @@ const verifyCallback = async (data, signature, params) => {
   const account = await getAccount(params.keyid);
   
   // ... Verify the signature using your preferred cryptographic library
-  
   if (!valid) throw new Error('Invalid signature');
-  if (params.expires && params.expires < Date.now()) throw new Error('Signature expired');
   
   return account;
 };

@@ -7,6 +7,8 @@ export async function verify<T>(message: RequestLike | ResponseLike, verifySigna
   if (!signatureInputHeader) throw new Error('Message does not contain Signature-Input header');
   const { key, components, parameters } = parseSignatureInputHeader(signatureInputHeader);
 
+  if (parameters.expires && parameters.expires < new Date()) throw new Error('Signature expired');
+
   const signatureHeader = message.headers['signature'];
   if (!signatureHeader) throw new Error('Message does not contain Signature header');
   const signature = parseSignatureHeader(key, signatureHeader);

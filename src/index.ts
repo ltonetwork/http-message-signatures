@@ -1,4 +1,4 @@
 export * from './types';
 export * from './sign';
 export * from './verify';
-export { parseAcceptSignatureHeader } from './parse';
+export { parseAcceptSignatureHeader as parseAcceptSignature } from './parse';

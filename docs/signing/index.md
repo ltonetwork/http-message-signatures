@@ -20,7 +20,9 @@ message. The `Signer` object must have the following properties:
 
 - `keyid`: A unique identifier for the key used to sign the message
 - `alg`: The algorithm used to sign the message
-- `sign`: A function that takes a `Buffer` and returns a `Buffer` containing the signature
+- `sign`: A function that takes a `string` and returns an `Uint8Array` containing the signature
+
+The verifier should be able to use the `keyid` to retrieve the public key used to verify the signature.
 
 ### Example
 
@@ -36,11 +38,11 @@ const signer = {
 };
 
 const request = {
-  method: 'GET',
+  method: 'POST',
   url: 'https://example.com/api/data',
   headers: {
     'Content-Type': 'application/json',
-    'X-Api-Key': 'some-api-key'
+    'Digest': 'sha-256=base64encodeddigest',
   }
 };
 

@@ -37,9 +37,9 @@ export type Component =
   | '@path'
   | '@query'
   | '@query-params'
+  | '@status'
+  | '@request-response'
   | string;
-
-export type ResponseComponent = '@status' | '@request-response' | Component;
 
 export type Parameters = {
   expires?: Date;
@@ -47,7 +47,7 @@ export type Parameters = {
   nonce?: string | number;
   alg?: string;
   keyid?: string;
-  [name: Parameter]: string | number | Date | { [Symbol.toStringTag]: () => string };
+  [name: Parameter]: string | number | true | Date | { [Symbol.toStringTag]: () => string };
 };
 
 export type SignOptions = {

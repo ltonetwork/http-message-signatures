@@ -1,65 +1,105 @@
 # HTTP Message Signatures
 
-[![Node.js CI](https://github.com/dhensby/node-http-message-signatures/actions/workflows/nodejs.yml/badge.svg)](https://github.com/dhensby/node-http-message-signatures/actions/workflows/nodejs.yml)
+This library provides a simple way to implement the
+[IETF HTTP Message Signatures draft standard](https://www.ietf.org/archive/id/draft-ietf-httpbis-message-signatures-00.html)
+for signing and verifying the integrity and authenticity of HTTP requests and responses.
 
-Based on the draft specifications for HTTP Message Signatures, this library facilitates the signing
-of HTTP messages before being sent.
+HTTP Message Signatures provide a secure way to ensure that HTTP messages exchanged between clients and servers are
+authentic and have not been tampered with during transit.
 
-## Specifications
+The library does not provide any cryptographic functionality, but instead relies on the user to provide `Signer` and
+`Verify` callback functions for signing and verifying messages, respectively. This allows you to choose your preferred
+cryptographic library and signing algorithm.
 
-Two specifications are supported by this library:
+This library can be used both in Node.js and the browser, and the documentation provides platform-specific examples for
+each environment.
 
-1. [HTTPBIS](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-message-signatures-06#appendix-B.2)
-2. [Cavage](https://datatracker.ietf.org/doc/html/draft-cavage-http-signatures-12)
+## Usage
 
-## Approach
+### Signing
 
-As the cavage specification is now expired and superseded by the HTTPBIS one, this library takes a
-"HTTPBIS-first" approach. This means that most support and maintenance will go into the HTTPBIS
-implementation and syntax. The syntax is then back-ported to the Cavage implementation as much as
-possible.
+```javascript
+import { sign } from '@ltonetwork/http-message-signatures';
 
-## Examples
+const signer = { 
+  keyid: 'test-key',
+  alg: 'hmac-sha256',
+  sign: (data) => {
+    // ... Sign the data using your preferred cryptographic library
+  }
+};
 
-### Signing a request
+const request = {
+  method: 'POST',
+  url: 'https://example.com/api/data',
+  headers: {
+    'Content-Type': 'application/json',
+    'Digest': 'sha-256=base64encodeddigest',
+  }
+};
 
-```js
-const { sign, createSigner } = require('http-message-signing');
 
 (async () => {
-    const signedRequest = await sign({
-        method: 'POST',
-        url: 'https://example.com',
-        headers: {
-            'content-type': 'text/plain',
-        },
-        body: 'test',
-    }, {
-        components: [
-            '@method',
-            '@authority',
-            'content-type',
-        ],
-        parameters: {
-            created: Math.floor(Date.now() / 1000),
-        },
-        keyId: 'my-hmac-secret',
-        signer: createSigner('hmac-sha256'),
-    });
-    // signedRequest now has the `Signature` and `Signature-Input` headers
-})().catch(console.error);
+    const signedRequest = await sign(request, { signer });
+    // ... Send the signed request to the server
+})();
 ```
 
-### Signing with your own signer
+### Verification
 
-It's possible to provide your own signer (this is useful if you're using a secure enclave or key
-management service). To do so, you must implement a callable that has the `alg` prop set to a valid
-algorithm value. It's possible to use proprietary algorithm values if you have some internal signing
-logic you need to support.
+```javascript
+import { verify } from '@ltonetwork/http-message-signatures';
 
-```js
-const mySigner = async (data) => {
-    return Buffer.from('my sig');
-}
-mySigner.alg = 'custom-123';
+const verifyCallback = async (data, signature, params) => {
+  const account = await getAccount(params.keyid);
+
+  // ... Verify the signature using your preferred cryptographic library
+  if (!valid) throw new Error('Invalid signature');
+  
+  return account;
+};
+
+
+const request = {
+  method: 'POST',
+  url: 'https://example.com/api/data',
+  headers: {
+    'Content-Type': 'application/json',
+    'Digest': 'sha-256=base64encodeddigest',
+    'Signature': 'keyid="test-key",algorithm="hmac-sha256",signature="base64encodedsignature"',
+    'Signature-Input': 'sig1=("@method" "@path" "@authority" "content-type" "digest");created=1618884475'
+  }
+};
+
+(async () => {
+  try {
+    const verified = await verify(request, verifyCallback);
+    console.log('Verification succeeded');
+  } catch (err) {
+    console.error('Verification failed:', err.message);
+  }
+})();
 ```
+
+## Documentation
+
+For detailed information on how to use this library, please visit the
+[HTTP Message Signatures documentation](https://ltonetwork.github.io/http-message-signatures).
+
+## Table of Contents
+
+1. [Installation](https://ltonetwork.github.io/http-message-signatures/installation)
+2. [Signing](https://ltonetwork.github.io/http-message-signatures/signing/index)
+    - [Signing in Node.js](https://ltonetwork.github.io/http-message-signatures/signing/nodejs)
+    - [Signing in the Browser](https://ltonetwork.github.io/http-message-signatures/signing/browser)
+3. [Verification](https://ltonetwork.github.io/http-message-signatures/verification/index)
+    - [Verification in Node.js](https://ltonetwork.github.io/http-message-signatures/verification/nodejs)
+    - [Verification in the Browser](https://ltonetwork.github.io/http-message-signatures/verification/browser)
+4. [Accept-Signature](https://ltonetwork.github.io/http-message-signatures/accept-signature)
+5. [API Reference](https://ltonetwork.github.io/http-message-signatures/api-reference)
+
+## Contributing
+
+We welcome contributions to this project. If you have a feature request, bug report, or would like to contribute code,
+please open an issue or submit a pull request on the
+[HTTP Message Signatures GitHub repository](https://github.com/ltonetwork/http-message-signatures).
