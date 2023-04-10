@@ -1,6 +1,6 @@
 export interface Signer {
   sign: (data: string) => Promise<Uint8Array>;
-  keyId: string;
+  keyid: string;
   alg: string;
 }
 
@@ -10,17 +10,19 @@ export interface LTOAccount {
   publicKey: string;
 }
 
-export type Verify<T> = (data: string, signature: Uint8Array, params: VerifyParams) => Promise<T>;
+export type Verify<T> = (data: string, signature: Uint8Array, params: Parameters) => Promise<T>;
+
+export type HeaderValue = { toString(): string } | string | string[] | undefined;
 
 export type RequestLike = {
   method: string;
   url: string;
-  headers: Record<string, { toString(): string } | string | string[] | undefined>;
+  headers: Record<string, HeaderValue>;
 };
 
 export type ResponseLike = {
   status: number;
-  headers: Record<string, { toString(): string } | string | string[] | undefined>;
+  headers: Record<string, HeaderValue>;
 };
 
 // see https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-message-signatures-06#section-2.3.1
@@ -40,6 +42,11 @@ export type Component =
 export type ResponseComponent = '@status' | '@request-response' | Component;
 
 export type Parameters = {
+  expires?: Date;
+  created?: Date;
+  nonce?: string | number;
+  alg?: string;
+  keyid?: string;
   [name: Parameter]: string | number | Date | { [Symbol.toStringTag]: () => string };
 };
 
@@ -47,16 +54,11 @@ export type SignOptions = {
   components?: Component[];
   parameters?: Parameters;
   allowMissingHeaders?: boolean;
+  key?: string;
   signer: Signer;
   created?: Date;
 };
 
 export type HeaderExtractionOptions = {
   allowMissing: boolean;
-};
-
-export type VerifyParams = {
-  alg: string;
-  keyId: string;
-  created: Date;
 };

@@ -123,7 +123,7 @@ describe('build', () => {
       expect(result).to.equal('?param=value&foo=bar&baz=batman');
     });
 
-    it('correctly extracts the @query', () => {
+    it('correctly extracts the @query string', () => {
       const result = extractComponent(
         {
           method: 'POST',

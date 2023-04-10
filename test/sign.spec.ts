@@ -36,11 +36,11 @@ describe('sign', () => {
         '"@authority": example.com',
         '"content-type": application/json',
         '"digest": SHA-256=abcdef',
-        '"@signature-params": ("@method" "@path" "@query" "@authority" "content-type" "digest");created=1681004344;keyId="test-key";alg="hmac-sha256"',
+        '"@signature-params": ("@method" "@path" "@query" "@authority" "content-type" "digest");created=1681004344;keyid="test-key";alg="hmac-sha256"',
       ].join('\n');
 
       const signer: Signer = {
-        keyId: 'test-key',
+        keyid: 'test-key',
         alg: 'hmac-sha256',
         async sign(data) {
           expect(data).to.equal(expectedData);
@@ -54,7 +54,7 @@ describe('sign', () => {
         Digest: 'SHA-256=abcdef',
         Signature: `sig1=:${expectedHashBase64}:`,
         'Signature-Input':
-          'sig1=("@method" "@path" "@query" "@authority" "content-type" "digest");created=1681004344;keyId="test-key";alg="hmac-sha256"',
+          'sig1=("@method" "@path" "@query" "@authority" "content-type" "digest");created=1681004344;keyid="test-key";alg="hmac-sha256"',
       });
     });
 
@@ -65,11 +65,11 @@ describe('sign', () => {
         '"@method": POST',
         '"@path": /path',
         '"digest": SHA-256=abcdef',
-        '"@signature-params": ("@authority" "@method" "@path" "digest");created=1681004344;keyId="test-key";alg="hmac-sha256"',
+        '"@signature-params": ("@authority" "@method" "@path" "digest");created=1681004344;keyid="test-key";alg="hmac-sha256"',
       ].join('\n');
 
       const signer: Signer = {
-        keyId: 'test-key',
+        keyid: 'test-key',
         alg: 'hmac-sha256',
         async sign(data) {
           expect(data).to.equal(expectedData);
@@ -83,7 +83,33 @@ describe('sign', () => {
         Digest: 'SHA-256=abcdef',
         Signature: `sig1=:${expectedHashBase64}:`,
         'Signature-Input':
-          'sig1=("@authority" "@method" "@path" "digest");created=1681004344;keyId="test-key";alg="hmac-sha256"',
+          'sig1=("@authority" "@method" "@path" "digest");created=1681004344;keyid="test-key";alg="hmac-sha256"',
+      });
+    });
+
+    it('should apply the key name', async () => {
+      const components = ['@authority'];
+      const expectedData = [
+        '"@authority": example.com',
+        '"@signature-params": ("@authority");created=1681004344;keyid="test-key";alg="hmac-sha256"',
+      ].join('\n');
+
+      const signer: Signer = {
+        keyid: 'test-key',
+        alg: 'hmac-sha256',
+        async sign(data) {
+          expect(data).to.equal(expectedData);
+          return expectedHash;
+        },
+      };
+
+      const signedRequest = await sign(sampleRequest, { components, signer, created, key: 'foo' });
+      expect(signedRequest.headers).to.deep.equal({
+        'Content-Type': 'application/json',
+        Digest: 'SHA-256=abcdef',
+        Signature: `foo=:${expectedHashBase64}:`,
+        'Signature-Input':
+          'foo=("@authority");created=1681004344;keyid="test-key";alg="hmac-sha256"',
       });
     });
   });
@@ -94,11 +120,11 @@ describe('sign', () => {
         '"@status": 200',
         '"content-type": text/plain',
         '"digest": SHA-256=abcdef',
-        '"@signature-params": ("@status" "content-type" "digest");created=1681004344;keyId="test-key";alg="hmac-sha256"',
+        '"@signature-params": ("@status" "content-type" "digest");created=1681004344;keyid="test-key";alg="hmac-sha256"',
       ].join('\n');
 
       const signer: Signer = {
-        keyId: 'test-key',
+        keyid: 'test-key',
         alg: 'hmac-sha256',
         async sign(data) {
           expect(data).to.equal(expectedData);
@@ -113,7 +139,7 @@ describe('sign', () => {
         Digest: 'SHA-256=abcdef',
         Signature: `sig1=:${expectedHashBase64}:`,
         'Signature-Input':
-          'sig1=("@status" "content-type" "digest");created=1681004344;keyId="test-key";alg="hmac-sha256"',
+          'sig1=("@status" "content-type" "digest");created=1681004344;keyid="test-key";alg="hmac-sha256"',
       });
     });
 
@@ -123,11 +149,11 @@ describe('sign', () => {
         '"@status": 200',
         '"digest": SHA-256=abcdef',
         '"x-total": 200',
-        '"@signature-params": ("@status" "digest" "x-total");created=1681004344;keyId="test-key";alg="hmac-sha256"',
+        '"@signature-params": ("@status" "digest" "x-total");created=1681004344;keyid="test-key";alg="hmac-sha256"',
       ].join('\n');
 
       const signer: Signer = {
-        keyId: 'test-key',
+        keyid: 'test-key',
         alg: 'hmac-sha256',
         async sign(data) {
           expect(data).to.equal(expectedData);
@@ -141,7 +167,7 @@ describe('sign', () => {
         'X-Total': '200',
         Digest: 'SHA-256=abcdef',
         Signature: `sig1=:${expectedHashBase64}:`,
-        'Signature-Input': 'sig1=("@status" "digest" "x-total");created=1681004344;keyId="test-key";alg="hmac-sha256"',
+        'Signature-Input': 'sig1=("@status" "digest" "x-total");created=1681004344;keyid="test-key";alg="hmac-sha256"',
       });
     });
   });

@@ -11,18 +11,19 @@ export async function sign<T extends RequestLike | ResponseLike>(message: T, opt
   const signingParams: Parameters = {
     ...opts.parameters,
     created: opts.created || new Date(),
-    keyId: opts.signer.keyId,
+    keyid: opts.signer.keyid,
     alg: opts.signer.alg,
   };
   const signatureInputString = buildSignatureInputString(signingComponents, signingParams);
   const dataToSign = buildSignedData(message, signingComponents, signatureInputString);
 
+  const key = opts.key || 'sig1';
   const signature = await opts.signer.sign(dataToSign);
   const sigBase64 = base64Encode(signature);
 
   Object.assign(message.headers, {
-    Signature: `sig1=:${sigBase64}:`,
-    'Signature-Input': `sig1=${signatureInputString}`,
+    Signature: `${key}=:${sigBase64}:`,
+    'Signature-Input': `${key}=${signatureInputString}`,
   });
 
   return message;
