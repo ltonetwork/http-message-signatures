@@ -1,7 +1,7 @@
 {
-  "name": "http-message-signatures",
-  "version": "0.1.2",
-  "description": "HTTP message signature implementation",
+  "name": "@ltonetwork/http-message-signatures",
+  "version": "0.0.0",
+  "description": "Implementation of the IETF HTTP Message Signatures draft standard",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
