@@ -7,7 +7,8 @@ nav_order: 2
 
 # Signing in the Browser
 
-This guide demonstrates how to sign HTTP messages in the browser using the SubtleCrypto API.
+This guide demonstrates how to sign HTTP messages using the
+[SubtleCrypto API](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto).
 
 ## Signer
 
@@ -34,7 +35,7 @@ class SignerHmac {
   async sign(data) {
     const encoded = new TextEncoder().encode(data);
     const key = await this.getKey();
-    const signature = await window.crypto.subtle.sign('HMAC', key, encoded);
+    const signature = await crypto.subtle.sign('HMAC', key, encoded);
     return new Uint8Array(signature);
   }
 }

@@ -44,10 +44,8 @@ const request = {
   method: 'GET',
   url: 'https://example.com/api/data',
   headers: {
-    'Content-Type': 'application/json',
-    'X-Api-Key': 'some-api-key',
     'Signature': 'keyid="test-key",algorithm="hmac-sha256",signature="base64encodedsignature"',
-    'Signature-Input': 'sig1=("@method" "@path" "@authority" "content-type");created=1618884475'
+    'Signature-Input': 'sig1=("@method" "@path" "@authority");created=1618884475'
   }
 };
 
@@ -65,3 +63,13 @@ For platform-specific examples on how to verify HTTP messages, refer to the foll
 
 - [Verification in Node.js](verification/nodejs.md)
 - [Verification in the Browser](verification/browser.md)
+
+### Verifying the Digest
+
+When the `Digest` or `Content-Digest` header is present in an HTTP message, it's crucial to verify it to ensure the
+integrity of the message body. The `Signature` header only message headers as components. The `Digest` header allows you
+to compare the received hash with the hash you calculate from the message body. If the hashes match, you can be
+confident that the message body has not been tampered with during transit.
+
+Verifying the `Digest` header is outside the scope of this library, but examples on how to do this can be found in the
+[Node.js](verification/nodejs.md) and [Browser](verification/browser.md) guides.

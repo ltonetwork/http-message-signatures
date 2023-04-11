@@ -123,3 +123,23 @@ headers. To create a Digest header using the SHA-256 hashing algorithm:
 
 After adding the `Digest` header to the HTTP message, include the digest component when signing the message. This ensures
 the integrity of the message body, as any changes to the body will result in a different hash, causing signature verification to fail.
+
+```
+Digest: SHA-256=4VYMyeX0tNLQ7opuAJeMECP3HgfLswAG3n+IqQprO0Q=
+```
+
+### Content-Digest
+
+The `Content-Digest` header is defined in the [draft-ietf-httpbis-digest-headers-11](https://www.ietf.org/archive/id/draft-ietf-httpbis-digest-headers-11.html),
+which aims to obsolete the current RFC 3230 standard, which defines the `Digest` header.
+
+It serves a similar purpose as the `Digest` header for message integrity. However, since the draft has not yet become an
+official standard, this guide uses the `Digest` header for broader compatibility and adherence to the currently
+established standard.
+
+Even though the standard is still a draft, you may use the `Content-Digest` header instead of the `Digest` header if you
+prefer.
+
+```
+Content-Digest: sha-256=:4VYMyeX0tNLQ7opuAJeMECP3HgfLswAG3n+IqQprO0Q=:
+```

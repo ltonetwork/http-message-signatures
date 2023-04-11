@@ -34,7 +34,7 @@ const request = {
   url: 'https://example.com/api/data',
   headers: {
     'Content-Type': 'application/json',
-    'Digest': 'sha-256=base64encodeddigest',
+    'Digest': 'sha-256=4VYMyeX0tNLQ7opuAJeMECP3HgfLswAG3n+IqQprO0Q=',
   }
 };
 
@@ -65,7 +65,7 @@ const request = {
   url: 'https://example.com/api/data',
   headers: {
     'Content-Type': 'application/json',
-    'Digest': 'sha-256=base64encodeddigest',
+    'Digest': 'sha-256=4VYMyeX0tNLQ7opuAJeMECP3HgfLswAG3n+IqQprO0Q=',
     'Signature': 'keyid="test-key",algorithm="hmac-sha256",signature="base64encodedsignature"',
     'Signature-Input': 'sig1=("@method" "@path" "@authority" "content-type" "digest");created=1618884475'
   }
