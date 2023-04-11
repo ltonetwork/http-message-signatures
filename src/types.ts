@@ -6,8 +6,13 @@ export interface Signer {
 
 export interface LTOAccount {
   sign: (data: string) => Uint8Array;
-  keyType: 'ed25519' | 'secp256k1' | 'secp256r1';
+  verify: (message: string | Uint8Array, signature: Uint8Array) => boolean;
+  keyType: 'ed25519' | 'secp256k1' | 'secp256r1' | string;
   publicKey: string;
+}
+
+export interface LTO<T> {
+  account: (settings: Record<string, any>) => T;
 }
 
 export type Verify<T> = (data: string, signature: Uint8Array, params: Parameters) => Promise<T>;
@@ -55,7 +60,7 @@ export type SignOptions = {
   parameters?: Parameters;
   allowMissingHeaders?: boolean;
   key?: string;
-  signer: Signer;
+  signer: Signer | LTOAccount;
   created?: Date;
 };
 

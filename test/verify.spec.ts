@@ -1,6 +1,7 @@
 import { expect } from 'chai';
-import { verify, Verify, RequestLike, ResponseLike } from '../src';
+import { RequestLike, ResponseLike, verify, Verify } from '../src';
 import { encode as base64Encode } from '../src/base64';
+import LTO, { Account } from '@ltonetwork/lto';
 
 const hash = new Uint8Array([
   227, 176, 196, 66, 152, 252, 28, 20, 154, 251, 244, 200, 153, 111, 185, 36, 39, 174, 65, 228, 100, 155, 147, 76, 164,
@@ -39,7 +40,7 @@ describe('verify', () => {
       '"@authority": example.com',
       '"content-type": application/json',
       '"digest": SHA-256=abcdef',
-      '"@signature-params": sig1=("@method" "@path" "@query" "@authority" "content-type" "digest");created=1681004344;keyid="test-key";alg="hmac-sha256"',
+      '"@signature-params": ("@method" "@path" "@query" "@authority" "content-type" "digest");created=1681004344;keyid="test-key";alg="hmac-sha256"',
     ].join('\n');
 
     const verifySignature: Verify<string> = async (data, signature, params) => {
@@ -106,6 +107,51 @@ describe('verify', () => {
     it('should verify a response', async () => {
       const result = await verify(sampleResponse, verifySignature);
       expect(result).to.eq('success');
+    });
+  });
+
+  describe('with lto', async () => {
+    const algorithms: [string, 'ed25519' | 'secp256k1' | 'secp256r1'][] = [
+      ['ed25519', 'ed25519'],
+      //['ecdsa-secp256k1', 'secp256k1'],
+      //['ecdsa-p256', 'secp256r1'],
+    ];
+
+    const lto = new LTO('T');
+
+    algorithms.forEach(([alg, keyType]) => {
+      let account: Account;
+      let signatureParams: string;
+      let expectedData: string;
+
+      before(() => {
+        account = lto.account({ keyType, seed: 'test' });
+      });
+
+      before(() => {
+        signatureParams = `("@method" "@path" "@query" "@authority" "content-type" "digest");created=1681004344;keyid="${account.publicKey}";alg="${alg}"`;
+        expectedData = [
+          '"@method": POST',
+          '"@path": /path',
+          '"@query": ?query=string',
+          '"@authority": example.com',
+          '"content-type": application/json',
+          '"digest": SHA-256=abcdef',
+          `"@signature-params": ${signatureParams}`,
+        ].join('\n');
+      });
+
+      it(`should return a ${keyType} account`, async () => {
+        const signature = account.sign(expectedData).base64;
+
+        sampleRequest.headers['signature-input'] = `sig1=${signatureParams}`;
+        sampleRequest.headers.signature = `sig1=:${signature}:`;
+
+        const result = await verify(sampleRequest, lto);
+        expect(result).to.be.instanceOf(Account);
+        expect(result.keyType).to.eq(keyType);
+        expect(result.publicKey).to.eq(account.publicKey);
+      });
     });
   });
 });

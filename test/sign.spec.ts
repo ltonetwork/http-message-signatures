@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import { sign, Signer, RequestLike, ResponseLike } from '../src';
 import { encode as base64Encode } from '../src/base64';
+import LTO, { Account } from '@ltonetwork/lto';
 
 const sampleRequest: RequestLike = {
   method: 'POST',
@@ -167,6 +168,51 @@ describe('sign', () => {
         Digest: 'SHA-256=abcdef',
         Signature: `sig1=:${expectedHashBase64}:`,
         'Signature-Input': 'sig1=("@status" "digest" "x-total");created=1681004344;keyid="test-key";alg="hmac-sha256"',
+      });
+    });
+  });
+
+  describe('with lto', async () => {
+    const algorithms: [string, 'ed25519' | 'secp256k1' | 'secp256r1'][] = [
+      ['ed25519', 'ed25519'],
+      //['ecdsa-secp256k1', 'secp256k1'],
+      //['ecdsa-p256', 'secp256r1'],
+    ];
+
+    const lto = new LTO('T');
+
+    algorithms.forEach(([alg, keyType]) => {
+      let account: Account;
+      let signatureParams: string;
+      let expectedData: string;
+
+      before(() => {
+        account = lto.account({ keyType, seed: 'test' });
+      });
+
+      before(() => {
+        signatureParams = `("@method" "@path" "@query" "@authority" "content-type" "digest");created=1681004344;keyid="${account.publicKey}";alg="${alg}"`;
+        expectedData = [
+          '"@method": POST',
+          '"@path": /path',
+          '"@query": ?query=string',
+          '"@authority": example.com',
+          '"content-type": application/json',
+          '"digest": SHA-256=abcdef',
+          `"@signature-params": ${signatureParams}`,
+        ].join('\n');
+      });
+
+      it(`should return a ${keyType} account`, async () => {
+        const expectedSignature = account.sign(expectedData).base64;
+
+        const signedRequest = await sign(sampleRequest, { signer: account, created });
+        expect(signedRequest.headers).to.deep.equal({
+          'Content-Type': 'application/json',
+          Digest: 'SHA-256=abcdef',
+          Signature: `sig1=:${expectedSignature}:`,
+          'Signature-Input': `sig1=${signatureParams}`,
+        });
       });
     });
   });
