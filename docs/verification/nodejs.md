@@ -46,8 +46,8 @@ const request = {
   headers: {
     'Content-Type': 'application/json',
     'Digest': 'SHA-256=sGb8nTkaRMkAaN1MwoyfztzCOkUo8rwSlzSFNt6aA74=',
-    'Signature': 'keyid="test-key",algorithm="hmac-sha256",signature="base64encodedsignature"',
-    'Signature-Input': 'sig1=("@method" "@path" "@authority" "content-type" "digest");created=1618884475'
+    'Signature': 'sig1="base64signature"',
+    'Signature-Input': 'sig1=("@method" "@path" "@authority" "content-type" "digest");created=1618884475;keyid="test-key";alg="hmac-sha256"'
   }
 };
 

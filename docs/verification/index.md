@@ -39,19 +39,18 @@ const verifyCallback = async (data, signature, params) => {
   return account;
 };
 
-
 const request = {
   method: 'GET',
   url: 'https://example.com/api/data',
   headers: {
-    'Signature': 'keyid="test-key",algorithm="hmac-sha256",signature="base64encodedsignature"',
-    'Signature-Input': 'sig1=("@method" "@path" "@authority");created=1618884475'
+    'Signature-Input': 'sig1=("@method" "@path" "@authority");created=1618884475;keyid="test-key";alg="hmac-sha256"',
+    'Signature': 'sig1=:base64signature:'
   }
 };
 
 (async () => {
   try {
-    const verified = await verify(request, verifyCallback);
+    const account = await verify(request, verifyCallback);
     console.log('Verification succeeded');
   } catch (err) {
     console.error('Verification failed:', err.message);
@@ -64,7 +63,40 @@ For platform-specific examples on how to verify HTTP messages, refer to the foll
 - [Verification in Node.js](verification/nodejs.md)
 - [Verification in the Browser](verification/browser.md)
 
-### Verifying the Digest
+## Verifying with LTO
+
+To verify with the LTO client, you do not need to create a verify callback, as the `verify()` method accepts an LTO
+client as verifier. The key type is determined based on the algorithm specified in the `Signature`. The keyid is used as
+the public key. The `verify()` method uses the LTO Client to create an account from the public key and verify the
+signature.
+
+```javascript
+import LTO from '@ltonetwork/lto';
+import { sign } from '@ltonetwork/http-message-signatures';
+
+const lto = new LTO();
+
+const request = {
+  method: 'GET',
+  url: 'https://example.com/api/data',
+  headers: {
+    'Signature-Input': 'sig1=("@method" "@path" "@authority");created=1618884475;keyid="2KduZAmAKuXEL463udjCQkVfwJkBQhpciUC4gNiayjSJ";alg=ed25519',
+    'Signature': 'sig1=:base64signature:'
+  }
+};
+
+(async () => {
+  try {
+    const account = await verify(request, lto);
+    console.log('Verification succeeded');
+  } catch (err) {
+    console.error('Verification failed:', err.message);
+  }
+})();
+
+```
+
+## Verifying the Digest
 
 When the `Digest` or `Content-Digest` header is present in an HTTP message, it's crucial to verify it to ensure the
 integrity of the message body. The `Signature` header only message headers as components. The `Digest` header allows you

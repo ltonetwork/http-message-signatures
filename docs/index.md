@@ -28,6 +28,12 @@ each environment.
 - Support for various components in the signature, including special components and headers
 - Browser and Node.js compatibility
 
+## LTO client library
+
+This library integrates out of the box with [@ltonetwork/lto](https://github.com/ltonetwork/lto-api.js). When using the
+LTO client library, it's not necessary to provide a `Signer` or `Verify` callback function. The `sign` and `verify`
+functions will automatically accept an LTO account to sign and an LTO client to verify messages.
+
 ## Table of Contents
 
 1. [Installation](installation.md)
