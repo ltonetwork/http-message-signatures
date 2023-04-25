@@ -45,20 +45,11 @@ To verify a signed HTTP message in the browser, use the `verify()` function with
 ```javascript
 import { verify } from '@ltonetwork/http-message-signatures';
 
-const request = {
-  method: 'POST',
-  url: 'https://example.com/api/data',
-  headers: {
-    'Content-Type': 'application/json',
-    'Digest': 'SHA-256=sGb8nTkaRMkAaN1MwoyfztzCOkUo8rwSlzSFNt6aA74=',
-    'Signature': 'sig1="base64signature"',
-    'Signature-Input': 'sig1=("@method" "@path" "@authority" "content-type" "digest");created=1618884475;keyid="test-key";alg="hmac-sha256"'
-  }
-};
-
 (async () => {
+  const response = await fetch('https://example.com/api/data');
+
   try {
-    const account = await verify(request, { verify: verifyHmac });
+    const account = await verify(response, { verify: verifyHmac });
 // ... The signature is valid
   } catch (error) {
 // ... The signature is invalid

@@ -52,18 +52,15 @@ To sign a request or response in the browser, use the `sign()` function with the
 ```javascript
 import { sign } from '@ltonetwork/http-message-signatures';
 
-const request = {
-  method: 'GET',
-  url: 'https://example.com/api/data',
-};
+const request = new Request('https://example.com/api/data', { method: 'GET' });
 
 (async () => {
-  const signedRequest = await sign(request, { signer });
-// ... Send the signed request to the server
+  await sign(request, { signer });       // Adds Signature and Signature-Input headers
+  const response = await fetch(request); // Send the signed request using the fetch API
 })();
 ```
 
-The signed request will now have the following headers:
+The signed request will have the following headers:
 
 ```
 Signature-Input: sig1=("@method","@target-uri"); keyid="test-key"; created=1625653823
