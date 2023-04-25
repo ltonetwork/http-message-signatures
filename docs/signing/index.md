@@ -63,31 +63,7 @@ For platform-specific examples on how to sign HTTP messages, refer to the follow
 
 - [Signing in Node.js](signing/nodejs.md)
 - [Signing in the Browser](signing/browser.md)
-
-## Signing with LTO
-
-To sign with the LTO client, you do not need to create a `Signer` object, as the `sign()` method accepts an LTO account
-as the `signer`.
-
-```javascript
-import LTO from '@ltonetwork/lto';
-import { sign } from '@ltonetwork/http-message-signatures';
-
-const lto = new LTO();
-const account = lto.account({ seed: 'you account seed', keyType: 'ed25519' });
-
-const request = {
-  method: 'GET',
-  url: 'https://example.com/api/data',
-};
-
-(async () => {
-  const signedRequest = await sign(request, { signer: account });
-// ... Send the signed request to the server
-})();
-```
-
-When using an LTO account to sign, the `keyid` will be the public key of the account.
+- [Signing with the LTO Client](signing/lto.md)
 
 ## Components
 
@@ -132,6 +108,23 @@ const components = ['@method', '@path', '@authority', 'content-type', 'digest'];
   // ... Send the signed request to the server
 })();
 ```
+
+## Expiration time
+
+HTTP Message Signatures have metadata properties that provide information regarding the signature's generation and
+verification. These properties are included in the `Signature-Input` header, and are separated by semicolons.
+
+The following parameters are supported:
+
+* `keyid`: A unique identifier for the key used to sign the message.
+* `created`: Creation time. This defaults to the current time.
+* `expires`: . By default, the signature never expires.
+* `nonce`: A random unique value generated for this signature value.
+* `tag`: An application-specific tag for the signature. This value is used by applications to help identify signatures
+* relevant for specific applications or protocols.
+
+In addition to these, custom parameters will also be included in the `Signature-Input` header. A parameter value must be
+a string, number, date, or boolean.
 
 ## Digest
 
