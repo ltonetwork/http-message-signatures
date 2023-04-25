@@ -14,9 +14,9 @@ This API reference provides detailed documentation for the methods exposed throu
 
 `RequestLike` is an interface with the following properties:
 
-- `method`: string - The HTTP method of the request.
-- `url`: string - The URL of the request.
-- `headers`: Headers - The request headers.
+- `method: string` - The HTTP method of the request.
+- `url: string` - The URL of the request.
+- `headers: Headers` - The request headers.
 
 Express request objects and the Request class of the Fetch API are examples of objects that implement the `RequestLike`
 interface.
@@ -25,8 +25,8 @@ interface.
 
 `ResponseLike` is an interface with the following properties:
 
-- `status`: number - The HTTP status code of the response.
-- `headers`: Headers - The response headers.
+- `status: number` - The HTTP status code of the response.
+- `headers: Headers` - The response headers.
 
 Express response objects and the Response class of the Fetch API are examples of objects that implement the
 `ResponseLike` interface.
@@ -60,13 +60,13 @@ function sign<T extends RequestLike | ResponseLike>(message: T, opts: SignOption
 
 The following options can be given:
 
-- `signer`: Signer | LTOAccount - The signer or LTOAccount used for signing the message.
-- `components`: string[] (optional) - [Components](/signing#components) used for signing the message.
-- `key`: string (optional) - The key used for signing the message. Defaults to "sig1".
-- `created`: Date (optional) - The date used for signing the message. Defaults to the current date.
-- `expires`: Date (optional) - The expiration date used for signing the message. Defaults to no expiration.
-- `nonce`: string (optional) - A unique value to prevent replay attacks.
-- `tag`: string (optional) - An application-specific identifier for the signature.
+- `signer: Signer | LTOAccount` - The signer or LTOAccount used for signing the message.
+- `components: string[]` (optional) - [Components](/signing#components) used for signing the message.
+- `key: string` (optional) - The key used for signing the message. Defaults to "sig1".
+- `created: Date` (optional) - The date used for signing the message. Defaults to the current date.
+- `expires: Date` (optional) - The expiration date used for signing the message. Defaults to no expiration.
+- `nonce: string` (optional) - A unique value to prevent replay attacks.
+- `tag: string` (optional) - An application-specific identifier for the signature.
 - `...params` (optional): Any other options will be treated as custom parameters and included in the signature input string.
 
 ### Signer interface

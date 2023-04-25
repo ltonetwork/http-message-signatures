@@ -46,7 +46,6 @@ jobs:
         api_key:
           secure: "idzEH5UHJ3c0FKFsgJQ7xIeLzjT0AwKlpQ5SZL6i3Xd1OxeLOLgqnfBZZpRAj0f/AGcBDlna/p9cAlr9OraXRzjL53kQwHspDCipxqdhhe41GrBOrImJBLDYOOWG/Vb0kDNHvJVHWcd8QRQWQPEBqQ0H/jE81DnEjwWdq8VOA+w69SseIzHwLwfHTiQT1z4umemCmfxO0aGcPudWtoa3+V/nBkqKGVFzPI8ozSh5dQ664uqUYUZAHpwtQayjhz2lkIx/iwdttEJVRs+nuMyDmgTugP/voLaBi6Ag1HC9XRI3zdt2ueJa6i2KjTYGdlULghkvOt6pGIEl1uLUSPwV2VsUZnQpRVpN0lLqeXFCnZzZdB8/9t1Td7GM5PGe77bkBecv2+Xvw/qG3Q8gyMcd5AznCoT2XWTlPwFSWTzVun7Ro40+1mvtYgJtRstmWwU6sLFmbiBjavIG4BiBhoVaEuXj1zdQmbTIZiRPEwywxWu0yVMF6f20iORVcxNLfsuz4wmKEErodE4dG5QykIV187+npNJ/zjDJ6kEp0UL9Mptx/M8ot0cdnoYn5SasJBoY63bTvq3joraqXrjqG1aB6Z2XFSlpes/JSQJcVo1Stbk5fpPBVJ/7KpfhIZNn0BVMj+8md2V3TzoxP0opA59m2/4xmcYHivvQMRdnFewmcI0="
         cleanup: false
-        skip_cleanup: true
         on:
           all_branches: true
         file_glob: true
@@ -66,4 +65,4 @@ jobs:
         on:
           tags: true
         cleanup: false
-        skip_cleanup: true
+
