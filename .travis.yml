@@ -1,0 +1,69 @@
+language: node_js
+node_js: 16
+
+branches:
+  only:
+    - main
+    - /^v\d+\.\d+\.\d+$/
+
+stages:
+  - name: test
+    if: tag IS blank
+  - name: deploy
+
+before_install:
+  - git config --local user.name "LTO Network"
+  - git config --local user.email "info@ltonetwork.com"
+install:
+  - npm install
+
+jobs:
+  fast_finish: true
+  include:
+    - name: "Test"
+      stage: test
+      script:
+        - npm test
+    - name: "Publish GitHub release"
+      stage: deploy
+      if: branch = main AND type = push
+      before_script:
+        - CURRENT_VERSION=$(git describe --tags --abbrev=0)
+        - |
+          if (git log $CURRENT_VERSION..HEAD | grep -q -i "\[bump:major\]"); then
+            NEXT_VERSION=$(awk -F. -v OFS=. '{$1++;$2=0;$3=0;print}' <<< "$CURRENT_VERSION")
+          elif (git log $CURRENT_VERSION..HEAD | grep -q -i "\[bump:minor\]"); then
+            NEXT_VERSION=$(awk -F. -v OFS=. '{$2++;$3=0;print}' <<< "$CURRENT_VERSION")
+          else
+            NEXT_VERSION=$(awk -F. -v OFS=. '{$3++;print}' <<< "$CURRENT_VERSION")
+          fi
+      script:
+        - git tag "$NEXT_VERSION"
+      before_deploy:
+        - npm run build
+      deploy:
+        provider: releases
+        api_key:
+          secure: "QZM44LFLHQDjQgiUXUN2WpOkKZQEkYVMocrFWs/JsY3hm/0575P/bcFlcSuqUsrYfS/4qHHwLp/Ovw0chvuygq9jeXH2Qbbk6pSxydSlpdhoJJfY8+26Xl2eMS0AZm3r6VNf8m/bvSt0CL/yIq65mEmVfEbmhSMzBTQ0u9l/xnQop9sgRP5UgLosC0J9LeW64g8rWYZ7AhG0yU5ZisTPrUgl0VWloQi7U3joqICs/vyrdmNd2HyMVdAv6W3861sQTNqn1Q6pASIBFlBrotsxDj2JrYmHH8Xuwsvtmpjy5cE/N3adeUOAiGkdpfBf9viNc88eCYZL9h2msj3v6f3fR04aub4O5BA8ztwvzdmz61Y0t3D0JdWRegwJ8kxRjs57oG3s1lh2I6joriEPt4eTR0l4dtSuJ6+WAokWnbMUNV+fhivAgwgUF1RBNNkpoY/Osol32Y5qJsZE5q9qmex8SuL/hnxF41Up+IeAs+mReLqjRQ/HDdDrvF+Y8PN0pHwP/3uEaimsgp72qUesbHpcraVhtHs8cGkKfCCo1B8wnR/OALFlqUxTx4mYaFUHOyq0Ab8kRB9amkRSh3nzDBOglcbiBP/KuDNG+S8afl5/O0+g7iXhnGmwqss3hFr8kvsDbyhZpKmJXX6q9aM4XDLdH9C46hgufAoSkGPHVpUjtSs="
+        cleanup: false
+        skip_cleanup: true
+        on:
+          all_branches: true
+        file_glob: true
+        file: dist/*
+    - name: "Publish to NPM"
+      stage: deploy
+      if: tag IS present
+      before_install:
+        - npm version $TRAVIS_TAG --no-git-tag-version
+      script:
+        - npx tsc
+      deploy:
+        provider: npm
+        email: arnold@jasny.net
+        api_key:
+          secure: "PuVV8v+me7JcwW3e96Q8ddqxFAyingmdTn5iNsc9tkZrckLHGKo33zCPXQ7zRIiYqhAZgKo2Pdn8rfBDmxpjX99YhBIxVGSLOVSovibIq1Pu61hWdiFeqWDI1UcGqiSK9bPEZOkPQ3CfCjO1rUGvvaeJ+It492z3zzE/4T8K5Yzwpxyd1sqHnO+3X5OV873k/x/IAYTbQ/uVRO9sWs2x2IWi9LLR5no9KLkz6Y387fSetFDLsc35V7/Qdzo+1k6ysHErQFZm3lxSey8vNEqhlDzsKlWCXJpFbHUQy6Ji3KiNrmJOBNvZ7I1GeiQT8qBQpEcnPPkWnEg6pA5gptkhjLopyW3GqYKmUvXFuErorf4xeAFkoj1gE5BnnLS5PnzCPLjs2fxgZeiGf3KjHmInX6iRau0h3NnWQYe/n+K+b5PdVZqEWg2t55Wktin3HfPx39XR6Gb4AWak9zJlO7y6cpJZL49k6xSzuZ2mA5p3xrKqMnA3tmsqayJpOAP7Atj2tRUsacK/P+umuE6PO91TtR4VOR9kNfplGJXWpM37HajzDi5X8yjiTfTLlf+rAoOggTXdcryfDO9wuORCCLyxeW1qC8X3rB0St9xsshQ7xl5UKE8ikzA5yxwN5CPJy0YXrrnNj1+HOX0MWFxIgt+OFcxCV6YjT8C2VRkFSF3+bXs="
+        on:
+          tags: true
+        cleanup: false
+        skip_cleanup: true
