@@ -24,24 +24,8 @@ describe('build', () => {
       });
     });
 
-    it('allows missing headers to return by default', () => {
+    it('returns an empty string for a missing header', () => {
       expect(extractHeader({ headers } as unknown as RequestLike, 'missing')).to.equal('');
-    });
-
-    it('throws on missing headers', () => {
-      expect(() =>
-        extractHeader({ headers } as unknown as RequestLike, 'missing', {
-          allowMissing: false,
-        }),
-      ).to.throw(Error, 'Unable to extract header "missing" from message');
-    });
-
-    it('does not throw on missing headers', () => {
-      expect(
-        extractHeader({ headers } as unknown as RequestLike, 'missing', {
-          allowMissing: true,
-        }),
-      ).to.equal('');
     });
   });
 

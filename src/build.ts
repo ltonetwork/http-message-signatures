@@ -1,17 +1,11 @@
-import { Component, HeaderExtractionOptions, Parameters, RequestLike, ResponseLike } from './types';
+import { Component, Parameters, RequestLike, ResponseLike } from './types';
 import { URL } from 'url';
 
-export function extractHeader(
-  { headers }: RequestLike | ResponseLike,
-  header: string,
-  opts?: HeaderExtractionOptions,
-): string {
+export function extractHeader({ headers }: RequestLike | ResponseLike, header: string): string {
+  if (typeof headers.get === 'function') return headers.get(header) ?? '';
+
   const lcHeader = header.toLowerCase();
   const key = Object.keys(headers).find((name) => name.toLowerCase() === lcHeader);
-  const allowMissing = opts?.allowMissing ?? true;
-  if (!allowMissing && !key) {
-    throw new Error(`Unable to extract header "${header}" from message`);
-  }
   let val = key ? headers[key] ?? '' : '';
   if (Array.isArray(val)) {
     val = val.join(', ');

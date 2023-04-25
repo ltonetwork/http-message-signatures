@@ -1,8 +1,10 @@
 export interface Signer {
-  sign: (data: string) => Promise<Uint8Array>;
+  sign: (data: string) => Uint8Array | Promise<Uint8Array>;
   keyid: string;
   alg: string;
 }
+
+export type Verify<T> = (data: string, signature: Uint8Array, params: Parameters) => T | Promise<T>;
 
 export interface LTOAccount {
   sign: (data: string) => Uint8Array;
@@ -15,19 +17,24 @@ export interface LTO<T> {
   account: (settings: Record<string, any>) => T;
 }
 
-export type Verify<T> = (data: string, signature: Uint8Array, params: Parameters) => Promise<T>;
+interface HeadersMap {
+  get(name: string): string | null;
+  set(name: string, value: string): void;
+}
+
+type Headers = Record<string, string> | HeadersMap;
 
 export type HeaderValue = { toString(): string } | string | string[] | undefined;
 
 export type RequestLike = {
   method: string;
   url: string;
-  headers: Record<string, HeaderValue>;
+  headers: Headers;
 };
 
 export type ResponseLike = {
   status: number;
-  headers: Record<string, HeaderValue>;
+  headers: Headers;
 };
 
 // see https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-message-signatures-06#section-2.3.1
@@ -46,24 +53,30 @@ export type Component =
   | '@request-response'
   | string;
 
-export type Parameters = {
+type StandardParameters = {
   expires?: Date;
   created?: Date;
-  nonce?: string | number;
+  nonce?: string;
   alg?: string;
   keyid?: string;
+  tag?: string;
+};
+
+export type Parameters = StandardParameters & {
   [name: Parameter]: string | number | true | Date | { [Symbol.toStringTag]: () => string };
 };
 
-export type SignOptions = {
+export type SignOptions = StandardParameters & {
   components?: Component[];
-  parameters?: Parameters;
-  allowMissingHeaders?: boolean;
   key?: string;
   signer: Signer | LTOAccount;
-  created?: Date;
-};
-
-export type HeaderExtractionOptions = {
-  allowMissing: boolean;
+  [name: Parameter]:
+    | Component[]
+    | Signer
+    | LTOAccount
+    | string
+    | number
+    | true
+    | Date
+    | { [Symbol.toStringTag]: () => string };
 };

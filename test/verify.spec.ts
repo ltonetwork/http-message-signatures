@@ -60,7 +60,7 @@ describe('verify', () => {
     });
 
     it('should throw an error if the request is not signed', async () => {
-      delete sampleRequest.headers.signature;
+      delete (sampleRequest.headers as any).signature;
 
       try {
         await verify(sampleRequest, verifySignature);
@@ -71,7 +71,7 @@ describe('verify', () => {
     });
 
     it('should throw an error on a key mismatch', async () => {
-      sampleRequest.headers.signature = `sig2=:${hashBase64}:`;
+      sampleRequest.headers['signature'] = `sig2=:${hashBase64}:`;
 
       try {
         await verify(sampleRequest, verifySignature);
@@ -145,7 +145,7 @@ describe('verify', () => {
         const signature = account.sign(expectedData).base64;
 
         sampleRequest.headers['signature-input'] = `sig1=${signatureParams}`;
-        sampleRequest.headers.signature = `sig1=:${signature}:`;
+        sampleRequest.headers['signature'] = `sig1=:${signature}:`;
 
         const result = await verify(sampleRequest, lto);
         expect(result).to.be.instanceOf(Account);
