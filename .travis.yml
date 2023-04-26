@@ -53,11 +53,10 @@ jobs:
     - name: "Publish to NPM"
       stage: deploy
       if: tag IS present
-      before_install:
-        - npm version $TRAVIS_TAG --no-git-tag-version
       install:
         - npm install
       script:
+        - npm version $TRAVIS_TAG --no-git-tag-version
         - npx tsc
       deploy:
         provider: npm
