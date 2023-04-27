@@ -1,3 +1,9 @@
+---
+layout: default
+title: API Reference
+nav_order: 5
+---
+
 # API Reference
 
 This API reference provides detailed documentation for the methods exposed through `index.ts`. It covers the following:
