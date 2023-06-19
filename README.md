@@ -94,9 +94,11 @@ For detailed information on how to use this library, please visit the
 2. [Signing](https://ltonetwork.github.io/http-message-signatures/signing/index)
     - [Signing in Node.js](https://ltonetwork.github.io/http-message-signatures/signing/nodejs)
     - [Signing in the Browser](https://ltonetwork.github.io/http-message-signatures/signing/browser)
+    - [Signing with LTO](https://ltonetwork.github.io/http-message-signatures/signing/lto.html)
 3. [Verification](https://ltonetwork.github.io/http-message-signatures/verification/index)
-    - [Verification in Node.js](https://ltonetwork.github.io/http-message-signatures/verification/nodejs)
-    - [Verification in the Browser](https://ltonetwork.github.io/http-message-signatures/verification/browser)
+    - [Verifying in Node.js](https://ltonetwork.github.io/http-message-signatures/verification/nodejs)
+    - [Verifying in the Browser](https://ltonetwork.github.io/http-message-signatures/verification/browser)
+    - [Verifying with LTO](https://ltonetwork.github.io/http-message-signatures/verification/lto.html)
 4. [Accept-Signature](https://ltonetwork.github.io/http-message-signatures/accept-signature)
 5. [API Reference](https://ltonetwork.github.io/http-message-signatures/api-reference)
 
