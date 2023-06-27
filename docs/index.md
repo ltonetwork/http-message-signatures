@@ -34,16 +34,4 @@ This library integrates out of the box with [@ltonetwork/lto](https://github.com
 LTO client library, it's not necessary to provide a `Signer` or `Verify` callback function. The `sign` and `verify`
 functions will automatically accept an LTO account to sign and an LTO client to verify messages.
 
-## Table of Contents
-
-1. [Installation](installation.md)
-2. [Signing](signing/index.md)
-    - [Signing in Node.js](signing/nodejs.md)
-    - [Signing in the Browser](signing/browser.md)
-3. [Verification](verification/index.md)
-    - [Verification in Node.js](verification/nodejs.md)
-    - [Verification in the Browser](verification/browser.md)
-4. [Accept-Signature](accept-signature.md)
-5. [API Reference](api-reference.md)
-
 [![LTO Network](https://user-images.githubusercontent.com/100821/230902149-bff231ac-125e-46a3-b318-4f0021d8662d.png)](https://ltonetwork.com)
