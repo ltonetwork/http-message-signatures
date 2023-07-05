@@ -1,14 +1,15 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
     "alwaysStrict": true,
+    "baseUrl": "",
     "lib": ["es2019", "es6", "dom"],
-    "declaration": true,
-    "outDir": "lib",
-    "rootDir": "./src/",
-    "target": "es6",
+    "module": "commonjs",
     "sourceMap": true,
-    "newLine": "lf"
+    "declaration": true,
+    "target": "es6",
+    "paths": {},
+    "rootDir": "src",
+    "outDir": "lib"
   },
-  "exclude": ["test", "lib"]
+  "include": ["src"]
 }
