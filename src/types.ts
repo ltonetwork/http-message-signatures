@@ -22,7 +22,7 @@ interface HeadersMap {
   set(name: string, value: string): void;
 }
 
-type Headers = Record<string, string> | HeadersMap;
+type Headers = Record<string, HeaderValue> | HeadersMap;
 
 export type HeaderValue = { toString(): string } | string | string[] | undefined;
 

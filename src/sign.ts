@@ -43,10 +43,8 @@ export async function sign<T extends RequestLike | ResponseLike>(message: T, opt
     message.headers.set('Signature', `${key}=:${sigBase64}:`);
     message.headers.set('Signature-Input', `${key}=${signatureInputString}`);
   } else {
-    Object.assign(message.headers, {
-      Signature: `${key}=:${sigBase64}:`,
-      'Signature-Input': `${key}=${signatureInputString}`,
-    });
+    message.headers['Signature'] = `${key}=:${sigBase64}:`;
+    message.headers['Signature-Input'] = `${key}=${signatureInputString}`;
   }
 
   return message;
