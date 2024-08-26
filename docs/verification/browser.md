@@ -16,8 +16,6 @@ To verify signatures in the browser, you can use a callback function with the `v
 shows how to create a `verifyHmac` function that verifies an HMAC-SHA256 signature.
 
 ```javascript
-import { decode as base64UrlDecode } from 'base64url';
-
 async function verifyHmac(data, signature, parameters) {
   const account = await getAccount(parameters.keyid);
 
@@ -26,9 +24,8 @@ async function verifyHmac(data, signature, parameters) {
   const key = await crypto.subtle.importKey('raw', keyData, algorithm, false, ['verify']);
 
   const encodedData = new TextEncoder().encode(data);
-  const decodedSignature = base64UrlDecode(signature);
 
-  const valid = await crypto.subtle.verify('HMAC', key, decodedSignature, encodedData);
+  const valid = await crypto.subtle.verify('HMAC', key, signature, encodedData);
   if (!valid) throw new Error('Invalid signature');
 
   return account;
@@ -49,7 +46,7 @@ import { verify } from '@ltonetwork/http-message-signatures';
   const response = await fetch('https://example.com/api/data');
 
   try {
-    const account = await verify(response, { verify: verifyHmac });
+    const account = await verify(response, verifyHmac);
 // ... The signature is valid
   } catch (error) {
 // ... The signature is invalid
@@ -83,3 +80,4 @@ import { base64 } from '@ltonetwork/http-message-signatures';
   if (receivedDigest !== calculatedDigest) throw new Error('Invalid digest');
 })();
 ```
+
