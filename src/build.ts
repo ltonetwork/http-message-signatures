@@ -1,5 +1,4 @@
 import { Component, Parameters, RequestLike, ResponseLike } from './types';
-import { URL } from 'url';
 
 export function extractHeader({ headers }: RequestLike | ResponseLike, header: string): string {
   if (typeof headers.get === 'function') return headers.get(header) ?? '';
