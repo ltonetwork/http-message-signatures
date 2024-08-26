@@ -18,7 +18,9 @@ create a `HmacSigner` class that implements the required properties and methods 
 import crypto from 'crypto';
 
 class HmacSigner {
-  constructor(key, keyid = 'test-key', alg = 'hmac-sha256') {
+  alg = 'hmac-sha256'
+
+  constructor(key, keyid = 'test-key') {
     this.key = key;
     this.keyid = keyid;
     this.alg = alg;

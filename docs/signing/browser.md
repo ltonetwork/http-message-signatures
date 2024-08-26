@@ -16,9 +16,7 @@ In the browser, you can create a `Signer` object using the SubtleCrypto API. The
 a `SignerHmac` class that implements the required properties and methods for a `Signer`.
 
 ```javascript
-import { encode as base64UrlEncode } from 'base64url';
-
-class SignerHmac {
+class HmacSigner {
   alg = 'hmac-sha256';
 
   constructor(key, keyid = 'test-key') {
@@ -40,7 +38,7 @@ class SignerHmac {
   }
 }
 
-const signer = new SignerHmac('your-secret-key', 'test-key');
+const signer = new HmacSigner('your-secret-key', 'test-key');
 ```
 
 Now you have a `signer` object that can be used with the `sign()` function to sign HTTP messages.
@@ -87,12 +85,13 @@ Here is an example of how to create a digest for an HTTP response with `Content-
 `{"hello":"world"}`.
 
 ```javascript
+import { base64 } from '@ltonetwork/http-message-signatures';
+
 const responseBody = JSON.stringify({ hello: 'world' });
 const encodedBody = new TextEncoder().encode(responseBody);
 
 const digestBuffer = await crypto.subtle.digest('SHA-256', encodedBody);
-const digestArray = Array.from(new Uint8Array(digestBuffer));
-const digestBase64 = btoa(digestArray.map(b => String.fromCharCode(b)).join(''));
+const digestBase64 = base64.encode(new Uint8Array(digestBuffer));
 
 const response = {
   status: 200,
