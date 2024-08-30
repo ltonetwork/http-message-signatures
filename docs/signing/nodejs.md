@@ -69,8 +69,9 @@ You can specify the components to sign using the `components` option. For more i
 ### Digest
 
 To secure the integrity of the HTTP request or response body, you can use the
-[`Digest` header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Digest). This header contains a hash of the
-message body.
+[`Digest` header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Digest) or
+[`Content-Digest` header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Digest). This header
+contains a hash of the message body.
 
 Before signing the HTTP message, you'll need to create the digest and add it to the headers. To create a Digest header
 using the SHA-256 hashing algorithm and the `crypto` library:

@@ -148,8 +148,9 @@ Digest: SHA-256=4VYMyeX0tNLQ7opuAJeMECP3HgfLswAG3n+IqQprO0Q=
 
 ### Content-Digest
 
-The `Content-Digest` header is defined in the [draft-ietf-httpbis-digest-headers-11](https://www.ietf.org/archive/id/draft-ietf-httpbis-digest-headers-11.html),
-which aims to obsolete the current RFC 3230 standard, which defines the `Digest` header.
+The [`Content-Digest` header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Digest) is defined in the
+[draft-ietf-httpbis-digest-headers-13](https://www.ietf.org/archive/id/draft-ietf-httpbis-digest-headers-13.html). It aims
+to replace the current RFC 3230 standard, which defines the `Digest` header.
 
 It serves a similar purpose as the `Digest` header for message integrity. However, since the draft has not yet become an
 official standard, this guide uses the `Digest` header for broader compatibility and adherence to the currently
