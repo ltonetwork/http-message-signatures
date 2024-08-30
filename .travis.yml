@@ -60,6 +60,8 @@ jobs:
         - npm install
       script:
         - npx tsc
+      before_deploy:
+        - npm install -g npm@9
       deploy:
         provider: npm
         email: arnold@jasny.net
