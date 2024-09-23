@@ -13,8 +13,10 @@ export function extractHeader({ headers }: RequestLike | ResponseLike, header: s
 }
 
 function getUrl(message: RequestLike | ResponseLike, component: string): URL {
-  if (!(message as RequestLike).url) throw new Error(`${component} is only valid for requests`);
-  return new URL((message as RequestLike).url);
+  const urlHeader = extractHeader(message, 'X-Request-URL');
+  const urlString = urlHeader || (message as RequestLike).url;
+  if (!urlString) throw new Error(`${component} is only valid for requests`);
+  return new URL(urlString);
 }
 
 // see https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-message-signatures-06#section-2.3
