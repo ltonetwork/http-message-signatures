@@ -23,6 +23,7 @@ export function getUrl(message: RequestLike | ResponseLike, component: string): 
   return new URL((message as RequestLike).url);
 }
 
+// see https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-message-signatures-06#section-2.3
 export function extractComponent(message: RequestLike | ResponseLike, component: string): string {
   switch (component) {
     case '@method':
