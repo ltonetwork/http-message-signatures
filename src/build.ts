@@ -12,11 +12,14 @@ export function extractHeader({ headers }: RequestLike | ResponseLike, header: s
   return val.toString().replace(/\s+/g, ' ');
 }
 
-function getUrl(message: RequestLike | ResponseLike, component: string): URL {
-  const urlHeader = extractHeader(message, 'X-Request-URL');
-  const urlString = urlHeader || (message as RequestLike).url;
-  if (!urlString) throw new Error(`${component} is only valid for requests`);
-  return new URL(urlString);
+export function getUrl(message: RequestLike | ResponseLike, component: string): URL {
+  if ('url' in message && 'protocol' in message) {
+    const host = extractHeader(message, 'host');
+    const baseUrl = `${message.protocol}://${host}`;
+    return new URL(message.url, baseUrl);
+  }
+  if (!(message as RequestLike).url) throw new Error(`${component} is only valid for requests`);
+  return new URL((message as RequestLike).url);
 }
 
 // see https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-message-signatures-06#section-2.3

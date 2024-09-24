@@ -47,13 +47,5 @@ export async function sign<T extends RequestLike | ResponseLike>(message: T, opt
     message.headers['Signature-Input'] = `${key}=${signatureInputString}`;
   }
 
-  if ('url' in message && message.url) {
-    if (typeof message.headers.set === 'function') {
-      message.headers.set('X-Request-URL', message.url);
-    } else {
-      message.headers['X-Request-URL'] = message.url;
-    }
-  }
-
   return message;
 }
