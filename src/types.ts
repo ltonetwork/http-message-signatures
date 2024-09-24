@@ -29,12 +29,14 @@ export type HeaderValue = { toString(): string } | string | string[] | undefined
 export type RequestLike = {
   method: string;
   url: string;
+  protocol?: string;
   headers: Headers;
 };
 
 export type ResponseLike = {
   status: number;
   headers: Headers;
+  protocol?: string;
 };
 
 // see https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-message-signatures-06#section-2.3.1

@@ -1,5 +1,5 @@
 import { Component, Parameters, RequestLike } from '../src';
-import { buildSignatureInputString, buildSignedData, extractComponent, extractHeader } from '../src/build';
+import { buildSignatureInputString, buildSignedData, extractComponent, extractHeader, getUrl } from '../src/build';
 import { expect } from 'chai';
 
 describe('build', () => {
@@ -240,6 +240,26 @@ describe('build', () => {
           '"@authority" "content-type" "digest" "content-length")' +
           ';created=1618884475;keyid="test-key-rsa-pss"',
       );
+    });
+  });
+
+  describe('getUrl', () => {
+    it('should correctly construct a full URL from a RequestLike object with protocol and host', () => {
+      const message: RequestLike = {
+        method: 'GET',
+        url: '/path',
+        protocol: 'https',
+        headers: {
+          host: 'www.example.com',
+        },
+      };
+      const result = getUrl(message, '@target-uri');
+      expect(result.toString()).to.equal('https://www.example.com/path');
+    });
+
+    it('should throw an error if the message does not contain a URL', () => {
+      const message = {} as RequestLike;
+      expect(() => getUrl(message, '@target-uri')).to.throw('@target-uri is only valid for requests');
     });
   });
 });

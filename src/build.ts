@@ -15,14 +15,14 @@ export function extractHeader({ headers }: RequestLike | ResponseLike, header: s
 export function getUrl(message: RequestLike | ResponseLike, component: string): URL {
   if ('url' in message && 'protocol' in message) {
     const host = extractHeader(message, 'host');
-    const baseUrl = `${message.protocol}://${host}`;
+    const protocol = message.protocol || 'http';
+    const baseUrl = `${protocol}://${host}`;
     return new URL(message.url, baseUrl);
   }
   if (!(message as RequestLike).url) throw new Error(`${component} is only valid for requests`);
   return new URL((message as RequestLike).url);
 }
 
-// see https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-message-signatures-06#section-2.3
 export function extractComponent(message: RequestLike | ResponseLike, component: string): string {
   switch (component) {
     case '@method':
