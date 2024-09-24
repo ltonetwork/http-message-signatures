@@ -36,7 +36,6 @@ export type RequestLike = {
 export type ResponseLike = {
   status: number;
   headers: Headers;
-  protocol?: string;
 };
 
 // see https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-message-signatures-06#section-2.3.1
