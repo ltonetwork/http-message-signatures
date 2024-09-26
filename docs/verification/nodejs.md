@@ -7,7 +7,7 @@ nav_order: 1
 
 # Verifying in Node.js
 
-This guide demonstrates how to verify HTTP message signatures in Node.js using the native `crypto` library.
+This guide demonstrates verifying HTTP message signatures in Node.js using the native `crypto` library.
 
 ## Verifier
 
@@ -17,15 +17,19 @@ signatures.
 
 ```javascript
 import crypto from 'crypto';
+import getAccount from './accounts';
 
-async function verifyHmac(data, signature, params) {
+export async function verifyHmac(data, signature, params) {
   const account = await getAccount(params.keyid);
 
   const hmac = crypto.createHmac('sha256', account.secretKey);
   hmac.update(data);
-  if (signature !== hmac.digest()) throw new Error('Invalid signature');
 
-  return account;
+  if (signature !== hmac.digest()) {
+    throw new Error("Invalid signature");
+  }
+
+  return account
 }
 ```
 
@@ -39,6 +43,7 @@ To verify a request or response in Node.js, use the `verify()` function with the
 
 ```javascript
 import { verify } from '@ltonetwork/http-message-signatures';
+import { verifyMac } from './verify-mac';
 
 const request = {
   method: 'POST',
@@ -52,13 +57,40 @@ const request = {
 };
 
 (async () => {
-  const result = await verify(request, { verify: verifyHmac });
-  if (result.verified) {
-// ... Process the verified request
-  } else {
-// ... Handle the failed verification
+  try {
+    const account = await verify(request, verifyHmac);
+    // ... Process the verified request
+  } catch (err)
+    // ... Handle the failed verification
   }
 })();
+```
+
+### Express
+
+If you're using [Express](https://expressjs.com/) or [NestJS](https://nestjs.com/), you can pass the Express request
+object to the `verify()` method.
+
+This example shows how to create a NestJS middleware class verifying an Express request.
+
+```typescript
+import { Injectable, NestMiddleware, HttpException, HttpStatus } from '@nestjs/common';
+import { Request, Response, NextFunction } from 'express';
+import { verify } from '@ltonetwork/http-message-signatures';
+import { verifyMac } from './verify-mac';
+
+@Injectable()
+export class VerifySignatureMiddleware implements NestMiddleware {
+  use(req: Request, res: Response, next: NextFunction) {
+    try {
+      request['signer'] = await verify(request, verifyHmac);
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.FORBIDDEN);
+    }
+
+    next();
+  }
+}
 ```
 
 ### Verifying the Digest
