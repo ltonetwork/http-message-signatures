@@ -3,5 +3,6 @@
 .idea
 .nyc_output
 .yarn
+.DS_Store
 yarn.lock
 package-lock.json

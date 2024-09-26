@@ -12,7 +12,13 @@ export function extractHeader({ headers }: RequestLike | ResponseLike, header: s
   return val.toString().replace(/\s+/g, ' ');
 }
 
-function getUrl(message: RequestLike | ResponseLike, component: string): URL {
+export function getUrl(message: RequestLike | ResponseLike, component: string): URL {
+  if ('url' in message && 'protocol' in message) {
+    const host = extractHeader(message, 'host');
+    const protocol = message.protocol || 'http';
+    const baseUrl = `${protocol}://${host}`;
+    return new URL(message.url, baseUrl);
+  }
   if (!(message as RequestLike).url) throw new Error(`${component} is only valid for requests`);
   return new URL((message as RequestLike).url);
 }

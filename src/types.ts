@@ -29,6 +29,7 @@ export type HeaderValue = { toString(): string } | string | string[] | undefined
 export type RequestLike = {
   method: string;
   url: string;
+  protocol?: string;
   headers: Headers;
 };
 
